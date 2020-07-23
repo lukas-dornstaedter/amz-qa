@@ -2,6 +2,16 @@ const request = require("request");
 const cheerio = require("cheerio");
 const fs = require("fs");
 
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+
+// Connection URL
+const url = 'mongodb://localhost:27017';
+
+// Database Name
+const dbName = 'uniproject';
+const collectionName = 'qaDE'
+
 
 // Produkt Link
 const qaLink = 'https://www.amazon.de/ask/questions/asin/B0756CYWWD/';
@@ -27,6 +37,8 @@ request(`${qaLink}${qaPage}${qaParameter}`, (error, response, html) => {
 
 // work with the html test code 
 
+let qaData = [];
+
 fs.readFile("html.txt", (err, data) => {
     let $ = cheerio.load(JSON.parse(data));
         $('.a-spacing-base ').each((i, el) => {
@@ -38,19 +50,38 @@ fs.readFile("html.txt", (err, data) => {
 
         if(review.productQuestion!=null && review.productQuestion != ""){
         if(review.productAnswerLong == ''){
-            console.log({
+            qaData.push({
                 productQuestion: review.productQuestion,
                 productAnswer: review.productAnswer
             })
         } else {
-            console.log({
+            qaData.push({
                 productQuestion: review.productQuestion,
                 productAnswer: review.productAnswerLong.replace('Weniger anzeigen', '').replace(/\n/g,'')
             })
         }
+
+
     }
 
         
     })
+    console.log(qaData.length);
+    pushQAToDB(qaData);
 })
 
+
+
+
+function pushQAToDB(qaData){
+    MongoClient.connect(url, function (err, client) {
+        assert.equal(null, err);
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
+        // Insert some documents
+        collection.insertMany(qaData, function (err, result) {
+            console.log(result);
+        });
+        client.close();
+    });
+}
