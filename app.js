@@ -31,16 +31,26 @@ fs.readFile("html.txt", (err, data) => {
     let $ = cheerio.load(JSON.parse(data));
         $('.a-spacing-base ').each((i, el) => {
         const review = {
-            productQuestion: $(el).find('.a-fixed-left-grid-inner').find('.a-col-right').find(".a-spacing-small").find("a").find(".a-declarative").text().trim()
+            productQuestion: $(el).find('.a-fixed-left-grid-inner').find('.a-col-right').find(".a-spacing-small").find("a").find(".a-declarative").text().trim(),
+            productAnswer: $(el).find('.a-fixed-left-grid-inner').find('.a-col-right').find('.a-spacing-base').find('.a-col-right').children('span').text(),
+            productAnswerLong: $(el).find('.a-fixed-left-grid-inner').find('.a-col-right').find('.a-spacing-base').find('.a-col-right').find('.askLongText').not('a').text().trim()
                 }
 
         if(review.productQuestion!=null && review.productQuestion != ""){
-        console.log(review);
+        if(review.productAnswerLong == ''){
+            console.log({
+                productQuestion: review.productQuestion,
+                productAnswer: review.productAnswer
+            })
+        } else {
+            console.log({
+                productQuestion: review.productQuestion,
+                productAnswer: review.productAnswerLong.replace('Weniger anzeigen', '').replace(/\n/g,'')
+            })
+        }
     }
 
         
     })
 })
 
-
-//            productQuestion: $(el).find('.a-fixed-left-grid-col .a-col-right').children().children().html()
