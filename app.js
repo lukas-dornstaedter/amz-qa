@@ -1,3 +1,4 @@
+const config = require("./config");
 const request = require("request");
 const cheerio = require("cheerio");
 const fs = require("fs");
@@ -15,9 +16,8 @@ const collectionName = 'qaDE'
 
 
 // Produkt Link
-const qaLink = 'https://www.amazon.de/ask/questions/asin/B0756CYWWD/';
-const qaPage = 1;
-const qaParameter = '/ref=ask_dp_iaw_ql_hza?isAnswered=true#question-Tx2B0DAZRJ1HTV8';
+const qaLink = config.QA_PRODUCT_LINK;
+const qaParameter = config.QA_PRODUCT_PARAMETER;
 
 // Start Getting Q&As for a product
 
