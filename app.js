@@ -19,6 +19,19 @@ const qaPage = 1;
 const qaParameter = '/ref=ask_dp_iaw_ql_hza?isAnswered=true#question-Tx2B0DAZRJ1HTV8';
 
 
+// Get the Number of Pages
+fs.readFile("html.txt", (err, data) => {
+    let $ = cheerio.load(JSON.parse(data));
+    let numberOfPages = $('.askPaginationHeader').find('.askPaginationHeaderMessage').text().trim()
+    numberOfPages = numberOfPages.slice(numberOfPages.indexOf("von ")+4, numberOfPages.indexOf('Fragen')-1);
+    let requestCount = Math.round(Number(numberOfPages) / 10);
+    if(numberOfPages%10 != 0){
+        requestCount++;
+    }
+    console.log(requestCount);
+})
+
+
 // Get Amz Product HTML Code for testing
 /*
 request(`${qaLink}${qaPage}${qaParameter}`, (error, response, html) => {
@@ -36,7 +49,7 @@ request(`${qaLink}${qaPage}${qaParameter}`, (error, response, html) => {
 */
 
 // work with the html test code 
-
+/*
 let qaData = [];
 
 fs.readFile("html.txt", (err, data) => {
@@ -69,7 +82,7 @@ fs.readFile("html.txt", (err, data) => {
     console.log(qaData.length);
     pushQAToDB(qaData);
 })
-
+*/
 
 
 
